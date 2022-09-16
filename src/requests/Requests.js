@@ -1,5 +1,15 @@
-export const UsersList = async () => {
+import axios from "axios";
 
+const API_URL = 'http://localhost:8080/';
+
+export const CreateUserRequest = async (data) => {
+    let url = API_URL+'user/create';
+    return axios.post(url,data);
+}
+
+export const LoginRequest = async (data) =>{
+    let url = API_URL+'user/login';
+    return axios.post(url,data);
 }
 
 export const ObjectivesListRequest = async () => {

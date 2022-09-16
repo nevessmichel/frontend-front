@@ -1,26 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { CreateUserRequest } from "../requests/Requests";
 import '../myCSS.css';
 
 const CreateUser = () =>{
     const [state, setState] = useState({name:"",email:"",password:"",password_re:""});
-    const [submit, setSubmit] = useState(false);
     const [passwordMatch, setPasswordMatch] = useState(true);
     const [message, setMessage] = useState(null);
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
+        event.preventDefault();
         setState({...state, [event.target.name]: event.target.value})
     }
 
-    const handleSubmit = () => {
+    const handleSubmit =  () => {
         if(passwordMatch && state.name.length !== 0 && state.email.length !== 0 && state.password.length !== 0){
-            setMessage(null);
+            setMessage("Criando Usuário");
             var data = {name:state.name, email:state.email, password:state.password}
+            CreateUserRequest(data).then(result =>{
+                console.log(result);
+                setMessage("Cadastro Realizado")
+                window.confirm("Cadastro Realizado");
+                navigate("/login");
+            }).catch(err=>{
+                setMessage("Falha no cadastro")
+                window.confirm(err.message);
+            });
+            
         }else{
             setMessage("Campos Inválidos")
         }
-
-        setSubmit(true);
     }
 
 
@@ -35,32 +45,29 @@ const CreateUser = () =>{
 
     return(<div>
         <Link to='/'>Início</Link>
-        <div>state: {JSON.stringify(state)}</div>
         <br/>
         <div>
                 <p style={{color:"red"}}>{message}</p>
             </div>
         <br/>
-
-        {submit && <div>
-                <p>Você Clicou em Criar</p>
-            </div>}
         <br/>
         <div>
         <label className="label">
             Nome: 
             <input name="name" type="text" value={state.name} onChange={handleChange}></input>
         </label>
-        <br/>
+        <br/><br/>
         <label className="label">
             Email: 
             <input name="email" type="email" value={state.email} onChange={handleChange}></input>
         </label>
         <br/>
+        <br/>
         <label className="label">
             Senha: 
             <input name="password" type="password" value={state.password} onChange={handleChange}></input>
         </label>
+        <br/>
         <br/>
         <label className="label">
             Repetir Senha: 
@@ -68,7 +75,11 @@ const CreateUser = () =>{
             {!passwordMatch && <p style={{color: "red"}}>As senhas não são iguais!</p>}
         </label>
         <br/>
+        <br/>
         <button onClick={handleSubmit}>Criar</button>
+        <br/>
+        <br/>
+      <button onClick={()=>navigate("/login")}>Logar</button>
         </div>
     </div>);
 

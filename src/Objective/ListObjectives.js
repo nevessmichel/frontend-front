@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { connect } from 'react-redux'
+import { bindActionCreators } from "redux";
+import * as actions from "../store/actions";
 import { ObjectivesListRequest } from "../requests/Requests";
+import {checkAuth} from "../Auth/checkAuth";
 
 
-const ListObjectives = () => {
+const ListObjectives = ({user}) => {
     const [state, setState] = useState([])
+    const navigate = useNavigate();
 
     const formatObjectives = (objective) => {
         console.log(objective);
@@ -16,6 +20,7 @@ const ListObjectives = () => {
     }
 
     useEffect(() =>{
+        checkAuth(user, navigate)
 
         ObjectivesListRequest().then(objectives => {
             setState(objectives);
@@ -50,4 +55,6 @@ const ListObjectives = () => {
     );
 }
 
-export default ListObjectives;
+const mapStateToProps = (state) => ({ user: state.user });
+const mapDispatchToProps = (dispatch) => bindActionCreators(actions, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(ListObjectives)

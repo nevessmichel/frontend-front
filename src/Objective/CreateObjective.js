@@ -23,11 +23,7 @@ const CreateObjective = () => {
     return(
         <div id="createObjective">
             <Link to='/'>Início</Link>
-            <div>state: {JSON.stringify(state)}</div>
             <br/>
-            {submit && <div>
-                <p>Você Clicou em Criar</p>
-            </div>}
             <br/>
             <form>
             <label>
